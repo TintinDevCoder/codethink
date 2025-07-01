@@ -43,6 +43,41 @@ public class part3 {
         }
         return sum - 2 * dp[target];
     }
+    public int findTargetSumWays(int[] nums, int target) {
+        int sum = 0;
+        for (int num : nums) {
+            sum +=  num;
+        }
+        sum -= target;
+        if (sum < 0 || sum % 2 != 0) return 0;
+        int cub = sum / 2;
+        int[] dp = new int[cub + 1];
+        dp[0] = 1;
+        for (int num : nums) {
+            for (int j = cub; j >= num; j--) {
+                dp[j] += dp[j - num];
+            }
+        }
+        return dp[cub];
+    }
+    public int findMaxForm(String[] strs, int m, int n) {
+        int[][] dp = new int[m + 1][n + 1];
+        for (String str : strs) {
+            int zeronum = 0;
+            int onenum = 0;
+            for (char c : str.toCharArray()) {
+                if (c - '0' == 0) zeronum++;
+                else onenum++;
+            }
+            for (int i = m; i >= zeronum; i--) {
+                for (int j = n; j >= onenum; j--) {
+                    dp[i][j] = Math.max(dp[i][j], dp[i - zeronum][j - onenum] + 1);
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         int m = sc.nextInt();
