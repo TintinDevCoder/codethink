@@ -20,16 +20,6 @@ public class t3 {
         return result;
         // write code here
     }
-    public long minCost2 (int[] a) {
-        long result = 0l;
-
-        for(int i : a) {
-            minHeap1.offer(i);
-        }
-
-        return result;
-        // write code here
-    }
     public static void main(String[] args) {
         t3 t = new t3();
         t.minCost1(new int[]{4,5,9,10});
