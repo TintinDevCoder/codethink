@@ -1,5 +1,6 @@
 package codethink.dp;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class part4 {
@@ -60,6 +61,19 @@ public class part4 {
         }
         return dp[n];
     }
+    public boolean wordBreak(String s, List<String> wordDict) {
+        int len = s.length();
+        boolean[] dp = new boolean[len + 1];
+        dp[0] = true;
+        for (int i = 1; i <= len; i++) {
+            for (int j = 0; j < i && !dp[i]; j++) {
+                if (wordDict.contains(s.substring(j, i)) && dp[j])
+                    dp[i] = true;
+            }
+        }
+        return dp[len];
+    }
+
     public static void main(String[] args) {
         part4 p = new part4();
         int climbStar = p.coinChange(new int[]{2}, 3);
