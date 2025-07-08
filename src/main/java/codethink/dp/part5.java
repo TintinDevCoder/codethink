@@ -189,8 +189,51 @@ public class part5 {
         }
         return result;
     }
+    public int longestCommonSubsequence(String text1, String text2) {
+        char[] charArray1 = text1.toCharArray();
+        char[] charArray2 = text2.toCharArray();
+        int len1 = text1.length();
+        int len2 = text2.length();
+        int[][] dp = new int[len1 + 1][len2 + 1];
+        for (int i = 1; i <= len1; i++) {
+            for (int j = 1; j <= len2; j++) {
+                if (charArray1[i - 1] == charArray2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                }else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        return dp[len1][len2];
+    }
+    public int maxUncrossedLines(int[] nums1, int[] nums2) {
+        int len1 = nums1.length;
+        int len2 = nums2.length;
+        int[][] dp = new int[len1 + 1][len2 + 1];
+        for (int i = 1; i <= len1; i++) {
+            for (int j = 1; j <= len2; j++) {
+                if (nums1[i - 1] == nums2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                }else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        return dp[len1][len2];
+    }
+    public int maxSubArray(int[] nums) {
+        int len = nums.length;
+        int[] dp = new int[len + 1];
+        int result = Integer.MIN_VALUE;
+        for (int i = 0; i < len; i++) {
+            dp[i + 1] = Math.max(nums[i], dp[i] + nums[i]);
+            result = Math.max(result, dp[i + 1]);
+        }
+        return result;
+    }
+
     public static void main(String[] args) {
         part5 p = new part5();
-        p.maxProfit2(new int[]{1,2,3,4,5});
+
     }
 }
