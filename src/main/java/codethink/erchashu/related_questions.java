@@ -426,10 +426,86 @@ public class related_questions {
         }
         return n;
     }
-
+    public TreeNode trimBST(TreeNode root, int low, int high) {
+        if (root == null) return null;
+        TreeNode left = trimBST(root.left, low, high);
+        TreeNode right = trimBST(root.right, low, high);
+        if (root.val >= low && root.val <= high) {
+            root.left = left;
+            root.right = right;
+            return root;
+        }else {
+            if (left != null) {
+                TreeNode node = left;
+                if (right != null) {
+                    while (node.right != null) {
+                        node = node.right;
+                    }
+                    node.right = right;
+                }
+                return left;
+            }
+            return right;
+        }
+    }
+    public TreeNode sortedArrayToBST1(int[] nums) {
+        return sortedArrayToBSTDfs(nums, 0, nums.length - 1);
+    }
+    public TreeNode sortedArrayToBSTDfs(int[] nums, int start, int end) {
+        if (start < 0 || end > nums.length - 1 || start > end) return null;
+        int mid = start + (end - start) / 2;
+        TreeNode node = new TreeNode(nums[mid]);
+        node.left = sortedArrayToBSTDfs(nums, start, mid - 1);
+        node.right = sortedArrayToBSTDfs(nums, mid + 1, end);
+        return node;
+    }
+    public TreeNode sortedArrayToBST2(int[] nums) {
+        Queue<TreeNode> root = new LinkedList(); // 队列1：装节点
+        Queue<Integer> left = new LinkedList<>();// 队列2：装左边界
+        Queue<Integer> right = new LinkedList<>();// 队列3：装右边界
+        //初始化根节点及其左右边界
+        TreeNode result = new TreeNode();
+        root.add(result);
+        left.add(0);
+        right.add(nums.length - 1);
+        while (!root.isEmpty()) {
+            //节点赋值
+            TreeNode node = root.poll();
+            Integer l = left.poll();
+            Integer r = right.poll();
+            int mid = l + (r - l) / 2;
+            node.val = nums[mid];
+            //处理节点左树
+            if (l <= mid - 1) {
+                TreeNode lefttree = new TreeNode();
+                node.left = lefttree;
+                root.add(lefttree);
+                left.add(l);
+                right.add(mid - 1);
+            }
+            //处理节点右树
+            if (r >= mid + 1) {
+                TreeNode righttree = new TreeNode();
+                node.right = righttree;
+                root.add(righttree);
+                left.add(mid + 1);
+                right.add(r);
+            }
+        }
+        return result;
+    }
+    int convertBSTPre = 0;
+    public TreeNode convertBST(TreeNode root) {
+        if (root == null) return null;
+        convertBST(root.right);
+        root.val += convertBSTPre;
+        convertBSTPre = root.val;
+        convertBST(root.left);
+        return root;
+    }
     public static void main(String[] args) {
         related_questions r = new related_questions();
-        r.findMode(TreeNode.initTreeNode(new int[]{1,0,1,0,0,1,1,0}));
+        r.convertBST(TreeNode.initTreeNode(new int[]{4,1,6,0,2,5,7,TreeNode.NULL,TreeNode.NULL,TreeNode.NULL,3,TreeNode.NULL,TreeNode.NULL,TreeNode.NULL,8}));
     }
 
 }

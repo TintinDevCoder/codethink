@@ -1,5 +1,10 @@
 package mianjing;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 public class zijie {
     static class  Line {
         String ip;
@@ -32,52 +37,106 @@ public class zijie {
         }
         return peekTime;
     }
+    public List<List<Integer>> threeSum(int[] nums) {
+        int len = nums.length;
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(nums);
+        for (int i = 0; i < len; i++) {
+            if (nums[i] > 0) break;
+            if (i > 0 && nums[i] == nums[i - 1]) continue;
+            int left = i + 1;
+            int right = len - 1;
+            while (left < right) {
+                if (nums[right] < 0) break;
+                int sum = nums[i] + nums[left] + nums[right];
+                if (sum == 0) {
+                    List<Integer> n = new ArrayList<>();
+                    n.add(nums[i]);
+                    n.add(nums[left]);
+                    n.add(nums[right]);
+                    result.add(n);
+                    while (left < right && nums[left] == nums[left + 1]) {
+                        left++;
+                    }
+                    while (left < right && nums[right] == nums[right - 1]) {
+                        right--;
+                    }
+                    left++;
+                    right--;
+                }else if (sum > 0) right--;
+                else left++;
+            }
+        }
+        return result;
+    }
 
+    //买卖股票的最佳时机
+    public int maxProfit1(int[] prices) {
+        int len = prices.length;
+        int result = 0;
+        int maxPrice = prices[len - 1];
+        for (int i = len - 2; i >= 0; i--) {
+            maxPrice = Math.max(maxPrice, prices[i]);
+            result = Math.max(result, maxPrice - prices[i]);
+        }
+        return result;
+    }
+    public int maxProfit2(int[] prices) {
+        int sum = 0;
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] > prices[i - 1]) sum += prices[i] - prices[i - 1];
+        }
+        return sum;
+    }
+    public int maxProfit3(int[] prices) {
+        int[] dp = new int[4]; // 0:第一次买入  1:第一次卖出  2:第二次买入  3:第二次卖出
+        dp[0] = dp[2] = -prices[0];
+        for (int i = 1; i < prices.length; i++) {
+            dp[0] = Math.max(dp[0], -prices[i]);
+            dp[1] = Math.max(dp[1], dp[0] + prices[i]);
+            dp[2] = Math.max(dp[2], dp[1] - prices[i]);
+            dp[3] = Math.max(dp[3], dp[2] + prices[i]);
+        }
+        return dp[3];
+    }
+    public int maxProfit4(int k, int[] prices) {
+        int[] dp = new int[2 * k + 1];
+        for (int i = 1; i < 2 * k; i+=2) {
+            dp[i] = -prices[0];
+        }
+        for (int i = 1; i < prices.length; i++) {
+            for (int j = 1; j <= 2 * k; j+=2) {
+                dp[j] = Math.max(dp[j], dp[j - 1] - prices[i]);
+                dp[j + 1] = Math.max(dp[j + 1], dp[j] + prices[i]);
+            }
+        }
+        return dp[2 * k];
+    }
+    public int maxProfit5(int[] prices, int fee) {
+        int len = prices.length;
+        int[][] dp = new int[len + 1][2]; // 0：持有  1：不持有
+        dp[0][0] = -prices[0];
+        for (int i = 1; i < prices.length; i++) {
+            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] - prices[i]);
+            dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][0] + prices[i] - fee);
+        }
+        return dp[len - 1][1];
+    }
+    public int maxProfit6(int[] prices, int fee) {
+        int len = prices.length;
+        int[][] dp = new int[len][3]; // 0：买入 1：不持有，当天为冷冻期 2：不持有，当天不是冷冻期
+        dp[0][0] = -prices[0];
+        dp[0][1] = dp[0][2] = 0;
+        for (int i = 1; i < prices.length; i++) {
+            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][2] - prices[i]);
+            dp[i][1] = dp[i - 1][0] + prices[i];
+            dp[i][2] = Math.max(dp[i - 1][2], dp[i - 1][1]);
+        }
+        return Math.max(dp[len - 1][1], dp[len - 1][2]);
+    }
     public static void main(String[] args) {
         zijie z = new zijie();
-        // 测试用例 1: 基本用例，多个用户
-        Line[] logs1 = {
-                new Line("192.168.1.1", 1, 5),
-                new Line("192.168.1.2", 2, 6),
-                new Line("192.168.1.3", 4, 8),
-                new Line("192.168.1.4", 3, 7),
-        };
-        System.out.println("Test Case 1: " + z.findPeakOnlineCount(logs1)); // 应该返回 4
-
-        // 测试用例 2: 无用户在线
-        Line[] logs2 = {};
-        System.out.println("Test Case 2: " + z.findPeakOnlineCount(logs2)); // 应该返回 0
-
-        // 测试用例 3: 用户只在线一秒
-        Line[] logs3 = {
-                new Line("192.168.1.1", 5, 5),
-                new Line("192.168.1.2", 5, 5),
-        };
-        System.out.println("Test Case 3: " + z.findPeakOnlineCount(logs3)); // 应该返回 5
-
-        // 测试用例 4: 用户在线时间完全重叠
-        Line[] logs4 = {
-                new Line("192.168.1.1", 1, 10),
-                new Line("192.168.1.2", 1, 10),
-                new Line("192.168.1.3", 1, 10),
-        };
-        System.out.println("Test Case 4: " + z.findPeakOnlineCount(logs4)); // 应该返回 1
-
-        // 测试用例 5: 用户在线时间不重叠
-        Line[] logs5 = {
-                new Line("192.168.1.1", 1, 2),
-                new Line("192.168.1.2", 3, 4),
-                new Line("192.168.1.3", 5, 6),
-        };
-        System.out.println("Test Case 5: " + z.findPeakOnlineCount(logs5)); // 应该返回 1
-
-        // 测试用例 6: 用户在线时间相邻
-        Line[] logs6 = {
-                new Line("192.168.1.1", 1, 2),
-                new Line("192.168.1.2", 2, 3),
-                new Line("192.168.1.3", 3, 4),
-        };
-        System.out.println("Test Case 6: " + z.findPeakOnlineCount(logs6)); // 应该返回 2
+        z.threeSum(new int[]{-1,0,1,2,-1,-4});
     }
 
 }
