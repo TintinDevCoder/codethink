@@ -462,10 +462,64 @@ public class ArrayAndString {
         }
         return -1;
     }
+    public List<String> fullJustify(String[] words, int maxWidth) {
+        List<String> result = new LinkedList<>();
+        int[] countLen = new int[words.length + 1];
+        for (int i = 1; i <= words.length; i++) {
+            countLen[i] = countLen[i - 1] + words[i - 1].length();
+        }
+        int index = 0;
+        int pre = 0;
+        while (index <= words.length) {
+            StringBuilder sb = new StringBuilder(); //每一行
+            //计算此行能装入那些元素
+            while (index + 1 <= words.length && maxWidth > countLen[index + 1] - countLen[pre] + (index - pre - 1)) {
+                index++;
+            }
+            //计算剩下空格数
+            int j = index - pre - 1;
+            int nowLen = countLen[index] - countLen[pre];
+            int temp = maxWidth - nowLen; //剩余空格数
+            int k = pre;
+            sb.append(words[k]);
+
+            //填入空格
+            if (index == words.length) {
+                temp -= j;
+                for (int p = k + 1; p < index; p++) {
+                    sb.append(" ");
+                    sb.append(words[p]);
+                }
+                while (temp-- != 0) sb.append(" ");
+                result.add(sb.toString());
+                break;
+            }else {
+                if (j == 0) {
+                    while (temp-- != 0) sb.append(" ");
+                }else {
+                    int o = temp % j;
+                    for (int p = k + 1; p < index; p++) {
+                        int l = temp / j;
+                        while (l-- != 0) sb.append(" ");
+                        if (o != 0) {
+                            sb.append(" ");
+                            o--;
+                        }
+                        sb.append(words[p]);
+                    }
+                }
+            }
+            result.add(sb.toString());
+            pre = index;
+        }
+
+        return result;
+    }
+
+
     public static void main(String[] args) {
         ArrayAndString s = new ArrayAndString();
-        String theSkyIsBlue = s.convert("A", 1);
-        System.out.println(theSkyIsBlue);
+        s.fullJustify(new String[]{"This", "is", "an", "example", "of", "text", "justification."}, 16);
     }
 
     //380. O(1) 时间插入、删除和获取随机元素

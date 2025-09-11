@@ -2,8 +2,8 @@ package codethink.lianbiao;
 
 //链表节点定义
 public class ListNode {
-    int val;
-    ListNode next;
+    public int val;
+    public ListNode next;
     public ListNode(int val) {
         this.val = val;
     }
