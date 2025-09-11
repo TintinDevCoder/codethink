@@ -124,6 +124,8 @@ public class LinkedListUse {
         return HEAD;
     }
 
+
+
     public static void main(String[] args) {
         LinkedListUse ll = new LinkedListUse();
         Node n1 = new Node(7);
