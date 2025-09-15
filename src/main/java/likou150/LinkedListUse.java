@@ -124,6 +124,29 @@ public class LinkedListUse {
         return HEAD;
     }
 
+    /**
+     * 19. 删除链表的倒数第 N 个结点
+     * @param head
+     * @param n
+     * @return
+     */
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode H = new ListNode(-1, head);
+        ListNode fast = H;
+        while (n-- != 0) fast = fast.next;
+        ListNode slow = H;
+        while (fast != null) {
+            fast = fast.next;
+            slow = slow.next;
+        }
+        slow.next = slow.next.next;
+        return H.next;
+    }
+
+/*    public ListNode deleteDuplicates(ListNode head) {
+
+    }*/
+
     public static void main(String[] args) {
         LinkedListUse ll = new LinkedListUse();
         Node n1 = new Node(7);
