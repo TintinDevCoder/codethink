@@ -2,8 +2,7 @@ package likou150;
 
 import codethink.lianbiao.ListNode;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class LinkedListUse {
     /**
@@ -125,94 +124,115 @@ public class LinkedListUse {
     }
 
     /**
-     * 92. 反转链表 II
+     * 19. 删除链表的倒数第 N 个结点
      * @param head
-     * @param left
-     * @param right
+     * @param n
      * @return
      */
-    public ListNode reverseBetween(ListNode head, int left, int right) {
-        if (left == right) return head;
-        int i = 2;
-        ListNode slow = head, fast = head.next;
-        while (fast != null && i++ <= left - 1) {
-            slow = slow.next;
-            fast = fast.next;
-        }
-        ListNode node = null;
-        if (left == 1) {
-            node = reverseList(slow, right - left);
-            return node;
-        }else {
-            node = reverseList(fast, right - left);
-            slow.next = node;
-        }
-        return head;
-    }
-    public ListNode reverseList(ListNode head, int num) {
-        ListNode slow = head, fast = head.next;
-        ListNode temp = fast;
-        while (fast != null && num-- != 0) {
-            temp = fast.next;
-            fast.next = slow;
-            slow = fast;
-            fast = temp;
-        }
-        head.next = temp;
-        return slow;
-    }
-    public ListNode reverseList(ListNode head, ListNode tail) {
-        ListNode slow = head, fast = head.next;
-        ListNode temp;
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode H = new ListNode(-1, head);
+        ListNode fast = H;
+        while (n-- != 0) fast = fast.next;
+        ListNode slow = H;
         while (fast != null) {
-            temp = fast.next;
-            fast.next = slow;
-            slow = fast;
-            fast = temp;
-            if (slow == tail) return slow;
+            fast = fast.next;
+            slow = slow.next;
         }
-        return slow;
+        slow.next = slow.next.next;
+        return H.next;
     }
 
     /**
-     * 25. K 个一组翻转链表
+     * 82. 删除排序链表中的重复元素 II
+     * @param head
+     * @return
+     */
+    public ListNode deleteDuplicates(ListNode head) {
+        ListNode H = new ListNode(-1, head);
+        ListNode slow = H;
+        ListNode fast = H.next;
+        int val = -200;
+        while (fast != null) {
+            if (val == fast.val) {
+                slow.next = fast.next;
+                fast = fast.next;
+            }
+            else if (fast.next != null && fast.val == fast.next.val) {
+                fast = fast.next;
+                val = fast.val;
+            }else {
+                slow = slow.next;
+                fast = fast.next;
+            }
+        }
+        return H.next;
+    }
+
+    /**
+     * 61. 旋转链表
      * @param head
      * @param k
      * @return
      */
-    public ListNode reverseKGroup(ListNode head, int k) {
-        if (k == 1) return head;
-        int i = 1;
-        ListNode start = head, end = head;
-        ListNode HEAD = null;
-        ListNode pre = null;
-        while (end != null) {
-            if (i == k) {
-                ListNode temp = end.next;
-                reverseList(start, end);
-                if (HEAD == null) {
-                    HEAD = end;
-                }
-                if (pre != null) {
-                    pre.next = end;
-                }
-                i = 1;
-                pre = start;
-                start.next = temp;
-                start = temp;
-                end = temp;
+    public ListNode rotateRight(ListNode head, int k) {
+        if (k == 0 || head == null) return head;
+        ListNode node = head;
+        int num = 0;
+        while (node != null) {
+            num++;
+            node = node.next;
+        }
+        k = k % num;
+        ListNode H = new ListNode(-1, head);;
+        if (k == 0) return head;
+        else {
+            node = H;
+            while (k-- != 0) {
+                node = node.next;
+            }
+            ListNode slow = H;
+            while (node.next != null) {
+                slow = slow.next;
+                node = node.next;
+            }
+            node.next = H.next;
+            H.next = slow.next;
+            slow.next = null;
+        }
+        return H.next;
+    }
+
+    /**
+     * 86. 分隔链表
+     * @param head
+     * @param x
+     * @return
+     */
+    public ListNode partition(ListNode head, int x) {
+        ListNode H = new ListNode(-1, head);
+        ListNode slow = H;
+        while (slow.next != null && slow.next.val < x) {
+            slow = slow.next;
+        }
+        ListNode fast = slow.next;
+        ListNode pre = slow;
+        while (fast != null) {
+            if (fast.val < x) {
+                pre.next = fast.next;
+                fast.next = slow.next;
+                slow.next = fast;
+                slow = slow.next;
+                fast = pre.next;
             }else {
-                i++;
-                end = end.next;
+                fast = fast.next;
+                pre = pre.next;
             }
         }
-        return HEAD;
+        return H.next;
     }
 
     public static void main(String[] args) {
         LinkedListUse ll = new LinkedListUse();
-
-        ll.reverseKGroup(new ListNode(1,new ListNode(2, new ListNode(3, new ListNode(4, new ListNode(5))))), 2);
     }
 
 }
