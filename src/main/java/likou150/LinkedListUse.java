@@ -124,24 +124,95 @@ public class LinkedListUse {
         return HEAD;
     }
 
+    /**
+     * 92. 反转链表 II
+     * @param head
+     * @param left
+     * @param right
+     * @return
+     */
+    public ListNode reverseBetween(ListNode head, int left, int right) {
+        if (left == right) return head;
+        int i = 2;
+        ListNode slow = head, fast = head.next;
+        while (fast != null && i++ <= left - 1) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        ListNode node = null;
+        if (left == 1) {
+            node = reverseList(slow, right - left);
+            return node;
+        }else {
+            node = reverseList(fast, right - left);
+            slow.next = node;
+        }
+        return head;
+    }
+    public ListNode reverseList(ListNode head, int num) {
+        ListNode slow = head, fast = head.next;
+        ListNode temp = fast;
+        while (fast != null && num-- != 0) {
+            temp = fast.next;
+            fast.next = slow;
+            slow = fast;
+            fast = temp;
+        }
+        head.next = temp;
+        return slow;
+    }
+    public ListNode reverseList(ListNode head, ListNode tail) {
+        ListNode slow = head, fast = head.next;
+        ListNode temp;
+        while (fast != null) {
+            temp = fast.next;
+            fast.next = slow;
+            slow = fast;
+            fast = temp;
+            if (slow == tail) return slow;
+        }
+        return slow;
+    }
 
+    /**
+     * 25. K 个一组翻转链表
+     * @param head
+     * @param k
+     * @return
+     */
+    public ListNode reverseKGroup(ListNode head, int k) {
+        if (k == 1) return head;
+        int i = 1;
+        ListNode start = head, end = head;
+        ListNode HEAD = null;
+        ListNode pre = null;
+        while (end != null) {
+            if (i == k) {
+                ListNode temp = end.next;
+                reverseList(start, end);
+                if (HEAD == null) {
+                    HEAD = end;
+                }
+                if (pre != null) {
+                    pre.next = end;
+                }
+                i = 1;
+                pre = start;
+                start.next = temp;
+                start = temp;
+                end = temp;
+            }else {
+                i++;
+                end = end.next;
+            }
+        }
+        return HEAD;
+    }
 
     public static void main(String[] args) {
         LinkedListUse ll = new LinkedListUse();
-        Node n1 = new Node(7);
-        Node n2 = new Node(13);
-        Node n3 = new Node(11);
-        Node n4 = new Node(10);
-        Node n5 = new Node(1);
-        n1.next = n2;
-        n2.next = n3;
-        n2.random = n1;
-        n3.next = n4;
-        n3.random = n5;
-        n4.next = n5;
-        n4.random = n3;
-        n5.random = n1;
-        ll.copyRandomList(n1);
+
+        ll.reverseKGroup(new ListNode(1,new ListNode(2, new ListNode(3, new ListNode(4, new ListNode(5))))), 2);
     }
 
 }
